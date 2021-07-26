@@ -21,23 +21,22 @@ server <- function(input, output) {
   storage <- reactiveValues(dat = data.table(), graphs = list(),
                             stats = list(), showTestTables = TRUE)
   
-  observe(storage$dat <- createDataSet(n = input$n, delta = input$delta,
+  observeEvent(input$sim_data, {
+    storage$dat <- createDataSet(n = input$n, delta = input$delta,
                                        delta_var = input$delta_var,
                                        tau = input$tau, d = input$dim,
-                                       distribution = "normal"))
-    
-  observe({
-      MST <- createSimilarityGraph(storage$dat, "MST")
-      MDP <- createSimilarityGraph(storage$dat, "MDP")
-      NNG <- createSimilarityGraph(storage$dat, "NNG")
-      storage$graphs <- list(MST = MST, MDP = MDP, NNG = NNG)
+                                       distribution = "normal")
+    MST <- createSimilarityGraph(storage$dat, "MST")
+    MDP <- createSimilarityGraph(storage$dat, "MDP")
+    NNG <- createSimilarityGraph(storage$dat, "NNG")
+    storage$graphs <- list(MST = MST, MDP = MDP, NNG = NNG)
   })
   
 
   
   output$MST <- renderPlot({
     # since input$t is a renderUI it is not immediately available!
-    if(is.null(input$t)){
+    if(is.null(input$t) | is.null(storage$graphs$MST)){
       NULL
     } else {
       MST_E <- find_Redges(extractEdges(storage$graphs$MST), input$t)
@@ -56,12 +55,16 @@ server <- function(input, output) {
   
   # render R data table
   output$MST_stats <- renderTable({
-    calcExpectations(storage$graphs$MST, input$n, input$t)
+    if(is.null(input$t) | is.null(storage$graphs$MST)){
+      NULL
+    } else {
+      calcExpectations(storage$graphs$MST, input$n, input$t)
+    }
   }, rownames = TRUE)
   
   output$MDP <- renderPlot({
     # since input$t is a renderUI it is not immediately available!
-    if(is.null(input$t)){
+    if(is.null(input$t) | is.null(storage$graphs$MDP)){
       NULL
     } else {
       MDP_E <- find_Redges(extractEdges(storage$graphs$MDP), input$t)
@@ -81,12 +84,16 @@ server <- function(input, output) {
   
   # render R data table
   output$MDP_stats <- renderTable({
-    calcExpectations(storage$graphs$MDP, input$n, input$t)
+    if(is.null(input$t) | is.null(storage$graphs$MDP)){
+      NULL
+    } else {
+      calcExpectations(storage$graphs$MDP, input$n, input$t)
+    }
   }, rownames = TRUE)
   
   output$NNG <- renderPlot({
     # since input$t is a renderUI it is not immediately available!
-    if(is.null(input$t)){
+    if(is.null(input$t) | is.null(storage$graphs$NNG)){
       NULL
     } else {
       NNG_E <- find_Redges(extractEdges(storage$graphs$NNG), input$t)
@@ -107,13 +114,17 @@ server <- function(input, output) {
   
   # render R data table
   output$NNG_stats <- renderTable({
+    if(is.null(input$t) | is.null(storage$graphs$NNG)){
+      NULL
+    } else {
     calcExpectations(storage$graphs$NNG, input$n, input$t)
+    }
   }, rownames = TRUE)
   
   
   ##== test functions ==##
   ##== MST ==##
-  testRes_MST <- eventReactive(input$test_MST, {
+  testRes_MST <- eventReactive(input$test_MST | input$sim_data, {
     withProgress(message = "Running permutations...", value = 0, {
       runGsegTest(storage$dat, storage$graphs$MST)
     })
@@ -124,7 +135,7 @@ server <- function(input, output) {
   )
   
   ##== MDP ==##
-  testRes_MDP <- eventReactive(input$test_MDP, {
+  testRes_MDP <- eventReactive(input$test_MDP | input$sim_data, {
     withProgress(message = "Running permutations...", value = 0, {
       runGsegTest(storage$dat, storage$graphs$MDP)
     })
@@ -135,7 +146,7 @@ server <- function(input, output) {
   )
   
   ##== NNG ==##
-  testRes_NNG <- eventReactive(input$test_NNG, {
+  testRes_NNG <- eventReactive(input$test_NNG | input$sim_data, {
     withProgress(message = "Running permutations...", value = 0, {
       runGsegTest(storage$dat, storage$graphs$NNG)
     })

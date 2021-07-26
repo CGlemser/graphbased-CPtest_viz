@@ -1,0 +1,11 @@
+name: graphbased-cptest_viz
+title:
+username:
+account: claudi
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4424537
+bundleId: 4857585
+url: https://claudi.shinyapps.io/graphbased-cptest_viz/
+when: 1627319731.08082
+lastSyncTime: 1627319731.08082
