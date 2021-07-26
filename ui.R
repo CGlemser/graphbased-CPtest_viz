@@ -7,6 +7,7 @@ library(shinyjs)
 thematic::thematic_shiny(font = "auto")
 
 fluidPage(
+  tags$head(tags$style(".shiny-output-error{color: white;}")),
   shinyjs::useShinyjs(),
   theme = bs_theme(version = 4, bootswatch = "flatly"),
   
@@ -32,9 +33,13 @@ fluidPage(
                   min = 0, max = 5,
                   value = 0, step = .5),
       uiOutput("tau_UI"),
-      uiOutput("t_UI"),
+      actionButton("sim_data", "Simulate data!"),
       
       br(),
+      br(),
+      
+      uiOutput("t_UI"),
+
       br(),
       
       radioButtons("R_highlight", "which R_i do you want highlighted?",
@@ -52,8 +57,8 @@ fluidPage(
           br(), br(), br(),
           tableOutput("MST_stats"),
           br(),
-          actionButton("test_MST", "Run the test!"),
-          br(),
+          actionButton("test_MST", "Re-run the test!"),
+          br(), br(),
           tableOutput("testRes_MST")
         )
       ),
@@ -65,8 +70,8 @@ fluidPage(
         column(5, align = "center",
           br(), br(), br(),
           tableOutput("MDP_stats"),
-          actionButton("test_MDP", "Run the test!"),
-          br(),
+          actionButton("test_MDP", "Re-run the test!"),
+          br(), br(),
           tableOutput("testRes_MDP")
         )
       ),
@@ -78,8 +83,8 @@ fluidPage(
         column(5, align = "center",
           br(), br(), br(),
           tableOutput("NNG_stats"),
-          actionButton("test_NNG", "Run the test!"),
-          br(),
+          actionButton("test_NNG", "Re-run the test!"),
+          br(), br(),
           tableOutput("testRes_NNG")
         )
       )
