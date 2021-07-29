@@ -8,12 +8,13 @@ server <- function(input, output) {
   output$t_UI <- renderUI({
       sliderInput("t", "hypothesized change point t",
                   min = 2, max = input$n-1,
-                  value = floor(input$n/2), step = 1)
+                  value = floor(input$n/2), step = 1,
+                  animate = animationOptions(interval = 2000))
   })
   
   output$tau_UI <- renderUI({
     sliderInput("tau",
-                "relative position of true change point tau",
+                "true change point tau",
                 min = 2, max = input$n-1,
                 value = floor(input$n/2), step = 1)
   })
@@ -48,7 +49,7 @@ server <- function(input, output) {
       )
       
       plotSimilarityGraph_app(graph = storage$graphs$MST, dt = storage$dat, 
-                              edge_highlights = edge_highlights) +
+                              edge_highlights = edge_highlights, tau = input$t) +
           ggtitle("MST") + theme(plot.title = element_text(hjust = 0.5))
     }
   })
@@ -77,7 +78,7 @@ server <- function(input, output) {
       )
       
       plotSimilarityGraph_app(storage$dat, graph = storage$graphs$MDP,
-                              edge_highlights = edge_highlights) +
+                              edge_highlights = edge_highlights, tau = input$t) +
           ggtitle("MDP") + theme(plot.title = element_text(hjust = 0.5))
     }
   })
@@ -107,7 +108,7 @@ server <- function(input, output) {
       )
       
       plotSimilarityGraph_app(storage$dat, graph = storage$graphs$NNG,
-                              edge_highlights = edge_highlights) +
+                              edge_highlights = edge_highlights, tau = input$t) +
           ggtitle("NNG") + theme(plot.title = element_text(hjust = 0.5))
     }
   })

@@ -62,8 +62,7 @@ createSimilarityGraph <- function(data = NULL, type = c("MST", "MDP", "NNG"), k 
 #' @param pch_group2 
 #'
 #' @return currently pretty ugly ggplot object
-plotSimilarityGraph <- function(data, graph,
-                                pch_group1 = 1, pch_group2 = 17){
+plotSimilarityGraph <- function(data, graph, pch_group1 = 1, pch_group2 = 17){
   dt <- copy(data)
   setDT(dt)
   

@@ -129,8 +129,8 @@ find_Redges <- function(E,t){
 #'
 #' @return currently pretty ugly ggplot object
 plotSimilarityGraph_app <- function(graph, dt, edge_highlights = NULL,
-                                    vertex_size = 2, edge_size = .5){
-
+                                    vertex_size = 2, edge_size = .5, tau = NULL){
+  
   sim_igraph <- igraph::graph_from_edgelist(extractEdges(graph), directed = FALSE)
   
   set.seed(1) # set.seed so layout is always the same!
@@ -153,6 +153,10 @@ plotSimilarityGraph_app <- function(graph, dt, edge_highlights = NULL,
     edgelist$col[edge_highlights] <- "#E74C3C"
   } else {
     edgelist$lwd <- 1
+  }
+  
+  if(!is.null(tau)){
+    layout$group <- rep(c("group1", "group2"), c(tau, nrow(dt)-tau))
   }
   
   p <- ggplot(data = layout, aes(x = V1, y = V2, col = group)) +
